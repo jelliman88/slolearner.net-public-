@@ -1,0 +1,11 @@
+{% extends "base.html" %} {% block content %}
+{% load static %}
+{% load i18n %}
+{% block css  %}
+<!-- <link rel="stylesheet" href="{% static 'styles/homepage/styles.css' %}" />
+<link rel="stylesheet" media="screen and (max-width: 1050px)" href="{% static 'styles/homepage/mobile.css' %}"/> <span><p>{% translate "hello" %}</p></span> -->
+{% endblock %}
+<h3 class="page-header">user dash</h3>
+
+<a href="{% url 'learn:dash'%}">learn</a>
+{% endblock %}

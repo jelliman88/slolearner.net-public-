@@ -1,0 +1,48 @@
+{% extends "base.html" %} {% block content %} {% load static %} {% load i18n %} {% block css %}
+<link rel="stylesheet" href="{% static 'styles/create/styles.css' %}" />
+{% endblock %}
+<h3 class="page-header">search entries</h3>
+<span>single word entry</span> <input type="checkbox" id="single-word">
+<br>
+<input id="query" type="text" placeholder="search"><button class="m-1" onclick="search()">submit</button>
+<input type="hidden" value="{{ csrf_token }}" id="csrf-token">
+<input type="hidden" value="{{ base_url }}" id="base-url">
+<ul id="results" class="d-flex flex-column">
+
+</ul>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+<script>
+    async function search(){
+    const results = document.getElementById('results')
+    results.innerHTML = ''
+    const baseUrl = document.getElementById('base-url').value
+    const csrfToken = document.getElementById('csrf-token').value
+    const query = document.getElementById('query').value
+    const singleWord = document.getElementById('single-word')
+    let single
+    singleWord.checked ? single = 'True': 'False'
+    const obj = {'query': query, 'single': single}
+    const res = await axios({
+        method: 'post',
+        url: `${baseUrl}create/ajax-search-entry/`,
+        headers:{
+            'Accept': 'application/json',
+            "Access-Control-Allow-Origin": "*",
+            'X-Requested-With': 'XMLHttpRequest', //Necessary to work with request.is_ajax()
+            'X-CSRFToken': csrfToken,
+      },
+        data: JSON.stringify(obj)
+      })
+        res.data.map((entry) => {
+        const li = document.createElement('li')
+        const a = document.createElement('a')
+        a.innerHTML = entry.eng
+        a.href = `${baseUrl}create/edit-entry/${entry.id}`
+        li.appendChild(a)
+        results.appendChild(li)       
+    })
+}
+ 
+</script>
+{% endblock %}

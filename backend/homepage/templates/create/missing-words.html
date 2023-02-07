@@ -1,0 +1,133 @@
+{% extends "base.html" %} {% block content %} {% load static %} {% load i18n %} {% load custom-tags %} {% block css %}
+<link rel="stylesheet" href="{% static 'styles/create/missing-words.css' %}" /> {% endblock %}
+<h3 class="page-header">
+    <span class="text-danger">create </span>
+    <span class="text-white">missing words: </span> <span class="text-info">{{ lesson.title }}</span></h3>
+    <a href="{% url 'create:lessons' level %}" class="btn btn-primary" >return to level {{ level }}</a>
+    
+    
+<div>
+    <ol class="mw-list">
+        
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary m-1">save</button>
+            {% for entry in entries %}
+            {% with outer_counter=forloop.counter0 %}
+
+            <li class="mw-entry">
+                
+                <div class="autofill-button" onclick="autofill(this)">autofill</div>
+                
+                <div class="select-wrapper m-1">
+                    <span>eng:</span>
+                    <select name="eng_word_{{ forloop.counter0 }}" aria-placeholder="select" >
+                    {% for word in entry.eng_words %}
+                    {% if word == lesson|get_selected_eng_word:entry.id %}
+                    <option value="{{ word }}" selected >{{ word }}</option>
+                    {% else %}
+                    <option value="{{ word }}">{{ word }}</option>
+                    {% endif %}
+                    
+                    {% endfor %}
+                </select>
+                    {% if lesson|get_eng_options:entry.id %}
+                    {% for options in lesson|get_eng_options:entry.id %}
+                    <input class="m-1" type="text" placeholder="option1" name="eng_option_{{ outer_counter }}" value={{ options.0 }}>
+                    <input class="m-1" type="text" placeholder="option2" name="eng_option_{{ outer_counter }}" value={{ options.1 }}>
+                    <input class="m-1" type="text" placeholder="option3" name="eng_option_{{ outer_counter }}" value={{ options.2 }}>
+                    {% endfor %}
+                    {% else %}
+                    <input class="m-1" type="text" placeholder="option1" name="eng_option_{{ outer_counter }}">
+                    <input class="m-1" type="text" placeholder="option2" name="eng_option_{{ outer_counter }}">
+                    <input class="m-1" type="text" placeholder="option3" name="eng_option_{{ outer_counter }}">
+                    {% endif %}
+                    
+                     
+                </div>
+                <div class="select-wrapper m-1">
+                <span>slo:</span>
+                <select name="slo_word_{{ forloop.counter0 }}" aria-placeholder="select">
+                {% for word in entry.slo_words %}
+                {% if word == lesson|get_selected_slo_word:entry.id %}
+                <option value="{{ word }}" selected >{{ word }}</option>
+                {% else %}
+                <option value="{{ word }}">{{ word }}</option>
+                {% endif %}
+                
+                {% endfor %}
+            </select>
+                {% if lesson|get_slo_options:entry.id %}
+                {% for options in lesson|get_slo_options:entry.id %}
+                <input class="m-1" type="text" placeholder="option1" name="slo_option_{{ outer_counter }}" value={{ options.0 }}>
+                <input class="m-1" type="text" placeholder="option2" name="slo_option_{{ outer_counter }}" value={{ options.1 }}>
+                <input class="m-1" type="text" placeholder="option3" name="slo_option_{{ outer_counter }}" value={{ options.2 }}>
+                {% endfor %}
+                {% else %}
+                <input class="m-1" type="text" placeholder="option1" name="slo_option_{{ outer_counter }}">
+                <input class="m-1" type="text" placeholder="option2" name="slo_option_{{ outer_counter }}">
+                <input class="m-1" type="text" placeholder="option3" name="slo_option_{{ outer_counter }}">
+                {% endif %}
+                
+                
+            </div>
+        
+        </li>
+        {% endwith %}
+        {% endfor %}
+    </form>
+    </ol>
+
+</div>
+
+
+</div>
+<input type="hidden" value="{{ csrf_token }}" id="csrf-token">
+<input type="hidden" value="{{ base_url }}" id="base-url">
+
+<script>
+
+const autofill = async (e) => {
+    const csrfToken = document.getElementById('csrf-token').value
+    const baseUrl = document.getElementById('base-url').value
+    const url = 'create/ajax-autofill-missing-words/'
+    const URL = `${baseUrl}${url}`
+    const li = e.parentElement
+    const engInputs = li.children[1]
+    const sloInputs = li.children[2]
+    const obj = {'eng':engInputs.children[1].value, 'slo': sloInputs.children[1].value}
+    
+    const data = await fetch(URL, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers:{
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest', //Necessary to work with request.is_ajax()
+            'X-CSRFToken': csrfToken,
+        },
+        body: JSON.stringify(obj) //JavaScript object of data to POST
+        })
+        .then(response => {
+        return response.json() //Convert response to JSON
+        })
+        .then(data => {
+            return data
+        })
+
+        const engOptionInputs = [engInputs.children[2],engInputs.children[3],engInputs.children[4]]
+        const sloOptionInputs = [sloInputs.children[2],sloInputs.children[3],sloInputs.children[4]]
+        
+        engOptionInputs.map((elm, i) => {
+            elm.value = data.eng[i]
+        })
+
+        sloOptionInputs.map((elm, i) => {
+            elm.value = data.slo[i]
+        })
+        
+    
+    
+}
+</script>
+
+{% endblock %}

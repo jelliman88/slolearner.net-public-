@@ -1,0 +1,109 @@
+{% load i18n %} {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <link rel="stylesheet" href="https://bootswatch.com/5/slate/bootstrap.min.css" />
+    <link rel="stylesheet" href="{% static '/styles/base.css' %}" />
+    <!-- <link rel="stylesheet" media="screen and (max-width: 1050px)" href="{% static '/styles/mobile.css' %}"/>-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.11.0/devicon.min.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
+    
+    <!--<script src="{% static '/scripts/main.js' %}"></script> was casing MIME error. Is it needed?-->
+    <title>slolearner.net</title>
+    <link rel="icon" href="{% static 'images/tortoise.png' %}" type="image/x-icon">
+    {% block css %} {% endblock %}
+</head>
+
+<body class="container unselectable">
+    {% get_current_language as LANGUAGE_CODE %} {% get_available_languages as LANGUAGES %} {% get_language_info_list for LANGUAGES as languages %}
+    <nav id="navbar" class="navbar border border-white navbar-expand-lg m-1">
+        <div class="container">
+
+            {% if user.is_authenticated %}
+            <a class="slo-learner-banner m-1 text-decoration-none" href="{% url 'learn:dash' %}">
+              <span class="text-danger">slo</span>
+              <img src="{% static 'images/tortoise-white.png' %}" class="tortoise-white-png" >
+              <span class="text-info">learner</span>
+            </a>
+            {% endif %} 
+             
+             
+            
+        <div class="collapse navbar-collapse">
+          <ul class="navbar-nav">
+            {% for lang in languages %}
+            
+            <li class="nav-item">
+              {% if request.path == "/en/" or request.path == "/sl/"  %}
+              <a class="m-1" href="/{{ lang.code }}">
+              {% if lang.name_local == 'English' %}
+              <img src="{% static 'images/eng-flag.png' %}" class="flag-icon" >
+              {% else %}
+              <img src="{% static 'images/slo-flag.png' %}" class="flag-icon" >
+              {% endif %}
+            </a> {% elif request.path == "/en/user-dash" or request.path == "/sl/user-dash" %}
+            
+            <a href="/{{ lang.code }}/learn/dash">
+                {{ lang.name_local }}
+              </a> {% else %} 
+              
+              {% endif %}
+            </li>
+            {% endfor %}
+             {% if user.is_authenticated %}
+             {% if user.is_superuser %}
+            <li class="nav-item">
+                <a class="link"  href="{% url 'create:dash' %}">create </a>
+            </li>
+            
+            {% endif %}
+            <li class="nav-item"><a class="link"  href="{% url 'learn:dash' %}">{% translate "dashboard" %}</a></li>
+            <li class="nav-item"><a class="link"  href="{% url 'learn:homework' %}">{% translate "homework" %}</a></li>
+            <li class="nav-item"><a class="link"  href="{% url 'homepage:podcast' %}">{% translate "podcast" %}</a></li>
+            <li class="nav-item"><a class="link"  href="{% url 'learn:my-account' %}">{% translate "my account" %}</a></li>
+            <form action="{% url 'homepage:logout' %}" method="POST" class="log-out-form" >
+              {% csrf_token %}
+              <button type="submit" class=" btn btn-sm btn-danger" >
+            Logout
+          </button>
+          </form>
+            {% else %}
+            <li class="nav-item">
+              <a class="link" href="{% url 'homepage:homepage' %}">{% translate "home" %}</a>
+             </li>
+            
+            <li class="nav-item">
+                <a class="link" href="{% url 'homepage:login' %}">{% translate "login" %}</a>
+            </li>
+            <li class="nav-item">
+                <a class="link" href="{% url 'homepage:signup' %}">{% translate "sign up" %}</a>
+            </li>
+            <li class="nav-item"><a class="link"  href="{% url 'homepage:podcast' %}">{% translate "podcast" %}</a></li>
+            <li class="nav-item">
+                <a class="link" href="{% url 'homepage:homepage' %}">{% translate "contact" %}</a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main > {% block content %} {% endblock %}</main>
+
+    <footer>
+    
+            <span>slolearner.net &copy;</span>
+            
+            </footer>
+</body>
+
+</html>
+

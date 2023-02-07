@@ -1,0 +1,72 @@
+/*
+.lined-paper-background {
+    background: url("/static/images/lined-paper.jpg");
+}
+*/
+
+.line-wrapper {
+    display: flex;
+    flex-direction: column;
+    border-radius: 5px;
+    border: 3px solid white;
+    margin: .5rem;
+    padding: .5rem;
+}
+
+.text-wrapper {
+    display: flex;
+    justify-content: space-between;
+    
+}
+
+.text-wrapper > div {
+    display: flex;
+    flex-direction: column;
+}
+
+.hidden {
+    
+    background-color: darkgray;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.hidden > span {
+    visibility: hidden;
+}
+
+
+
+.show:hover {
+    cursor: pointer;
+}
+.flag-icon {
+    max-width: 5rem;
+    height: auto;
+}
+
+
+
+.flag-icon-right {
+    margin-left: auto ;
+}
+
+.flag-icon-left {
+    margin-right: auto;
+}
+
+.delete-button {
+    margin-right: auto;
+    cursor: pointer;
+    color: red;
+}
+
+.audio-button-left {
+    cursor: pointer;
+    margin-left: 2rem;
+}
+
+.audio-button-right {
+    cursor: pointer;
+    margin-right: 2rem;
+}

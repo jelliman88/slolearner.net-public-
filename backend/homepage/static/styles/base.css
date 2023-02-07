@@ -1,0 +1,136 @@
+@import url('https://fonts.googleapis.com/css2?family=Chela+One&family=Cutive+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Corben&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Silkscreen&display=swap'); /* 80øs font for result  */
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville&display=swap'); /* actual-text font  */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap'); /* newspaper title  */
+
+/* vars are also in react css styles*/
+
+
+
+:root {
+    --primary-color-1: #D50032;
+    --primary-color-2: #fff;
+    --primary-color-3: #003DA5;
+    --primary-color-4: #3fb926;
+    --primary-color-5: #8a3be6;
+    --primary-color-6: #ec9d36;
+}
+
+.unselectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+.primary-color-1-text{
+    color: var(--primary-color-1);
+}
+
+.primary-color-3-text{
+    color: var(--primary-color-3);
+}
+
+.primary-color-4-text{
+    color: var(--primary-color-4);
+}
+
+.spinner {
+    margin: 10rem;
+}
+
+.homework-add-remove-button {
+    border-radius: 5px;
+    padding: 4px 8px 4px 8px;
+    border: 1px solid white;
+    
+}
+
+.homework-add-remove-button:hover {
+    cursor: pointer;
+    background-color: black;
+    transition: .5s;
+}
+
+
+body { 
+    text-align: center;
+    font-family: 'Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;;
+   
+    
+    
+}
+
+nav {
+    border: 3px solid white;
+    width: 100%;
+    min-height: 5rem;
+    border-radius: 5px;
+}
+
+main {
+    min-height: 80vh;
+    
+}
+
+
+.link {
+    text-decoration: none;
+    color: white;
+    margin: 1rem;
+}
+
+.link:hover {
+    color: lightcoral;
+    
+ }
+.log-out-form {
+    margin-left: auto;
+}
+
+
+
+.tortoise-white-png {
+    max-width: 4rem;
+    max-height: auto;
+    margin-bottom: .7rem;
+}
+
+.slo-learner-banner {
+    margin-top: 3rem;
+    font-size: 3rem;
+}
+
+.slo-learner-podcast-banner {
+    font-size: 3rem;
+}
+
+/* page constants */
+.page-header {
+    margin: 1rem;
+}
+
+.fas {
+    color: black;
+}
+
+.auth-form-wrapper {
+    max-width: 400px;
+    margin: 0 auto; 
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+.flag-icon {
+    max-height: 3rem;
+    height: auto;
+}
+
+
+ 

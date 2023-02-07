@@ -1,0 +1,67 @@
+{% extends "base.html" %} {% block content %} {% load static %} {% load i18n %} {% block css %}
+<link rel="stylesheet" href="{% static 'styles/create/styles.css' %}" />
+<!--link rel="stylesheet" media="screen and (max-width: 1050px)" href="{% static 'styles/homepage/mobile.css' %}"/> <span><p>{% translate "hello" %}</p></span> -->
+{% endblock %}
+<h3 class="page-header">upload audio</h3>
+
+<div class="wrapper">
+    <form id="audio-form" method="POST" enctype="multipart/form-data">
+        <div>
+            <label for="gap">gap threshold ms</label>
+            <select name="gap" id="gap">
+                <option value="100" selected>100</option>
+                <option value="150">150</option>
+                <option value="200" >200</option>
+                <option value="250">250</option>
+                <option value="300">300</option>
+                <option value="350">350</option>
+            </select>
+            <label for="volume">volume</label>
+            <input name="volume" type="range" id="volume" min="20" max="40" >
+            <span id="output">28</span>
+            
+            
+        </div>
+        {% csrf_token %}
+        <div class="border border-3 border-danger rounded p-4 m-1">
+            <select onchange="getLessons(this)" name="level"> 
+                <option hidden>choose level</option>
+                {% for level in levels %}
+                <option
+                {% if level.level == selected_level %} 
+                selected {% endif %} 
+                value="{{ level.level }}">{{ level.level }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="border border-3 rounded p-4 m-1">
+            <input {% if not selected_level %} disabled {% endif %} type="file" name="mp3"  accept="audio/*" required>
+        </div>
+       <div class="border border-info border-3 rounded p-4 m-1 class"> 
+            <select {% if not selected_level %} disabled {% endif %} name="lesson" required > 
+                <option hidden>choose lesson</option>
+                {% for lesson in lessons %}
+                <option value="{{ lesson.id }}">{{ lesson.title }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <button {% if not lessons %} disabled {% endif %} class="btn btn-primary">upload</button>
+
+    </div>
+    
+
+</div>
+
+<script>
+    document.getElementById('volume').oninput = function() {
+    output.innerHTML = this.value;
+    }
+    const form = document.getElementById('audio-form')
+
+    function getLessons(e){
+        form.submit()
+    }
+</script>
+
+{% endblock %}

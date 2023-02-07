@@ -1,0 +1,73 @@
+.generator-wrapper {
+    border: 5px solid black;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+}
+
+.actor {
+    min-height: 2rem;
+    
+}
+.result {
+    min-height: 2rem;
+    
+}
+
+.switch-lang-box {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.generator-text-wrapper {
+    display: flex;
+    justify-content: space-between;
+    padding: 2rem;
+   
+}
+
+.text-input-div {
+   display: flex;
+   flex-direction: column;
+}
+
+.text-input-div > div {
+    margin: 1rem;
+ }
+
+ .slo-char-button {
+    padding: .5rem;
+ }
+.actual-text {
+   font-size: 3rem;
+   font-weight: 50;
+   margin-top: 4rem;
+   
+}
+
+.generator-buttons-wrapper {
+    display: flex;
+    justify-content: space-around;
+}
+
+.focusMode { 
+    background-color: rgb(230, 126, 230);
+}
+
+.translate-btn {
+    max-height: 2rem;
+}
+.btn:disabled {
+    opacity: 0.3;
+}
+
+.reverse-logo {
+    font-size: 3rem;
+    color: black;
+}
+.reverse-logo:hover {
+    cursor: pointer;
+    
+}
+
+

@@ -1,0 +1,45 @@
+{% extends "base.html" %} {% block content %} {% load static %} {% load i18n %} {% block css %}
+<!-- <link rel="stylesheet" href="{% static 'styles/homepage/styles.css' %}" />
+<link rel="stylesheet" media="screen and (max-width: 1050px)" href="{% static 'styles/homepage/mobile.css' %}"/> -->
+{% endblock %}
+{% get_current_language as LANGUAGE_CODE %}
+<div class="auth-form-wrapper">
+    <h3 class="border-top border-danger border-3">{% translate "create an account" %}</h3>
+    <form class="auth-form border-top border-info border-2 p-2" method="POST" name="form" id="form">
+        {% if error == 'focus-group-error' %}
+        <div class="border border-3 border-danger rounded p-2 m-2">{% translate "Account creation is currently closed for new users, apologies. Please check back later" %}</div>
+        {% else %}
+        <br>
+        {% endif %}
+      {% csrf_token %}
+        <div class="auth-form-inputs">
+            {{ form.as_p }}
+        </div>
+ 
+        
+        <button type="submit" class="btn btn-info" onclick="showSpinner()">{% translate "sign up" %}</button>
+        <br>
+        <br>
+        <a  href="{% url 'homepage:login' %}">{% translate "already have an account?" %}</a>
+        <input type="hidden" name="language-code" value={{ LANGUAGE_CODE }}>
+    </form>
+    <div id="spinner" class="invisible border-top border-info">
+        <h5>{% translate "please wait..." %}</h5>
+        <br>
+        <div class="spinner-border text-info" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+</div>
+
+<script>
+    function showSpinner(){
+        const form = document.getElementById('form')
+        const spinner = document.getElementById('spinner')
+        form.classList.add('d-none')
+        spinner.classList.remove('invisible')
+        
+
+    }
+</script>
+{% endblock %}

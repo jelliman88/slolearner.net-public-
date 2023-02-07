@@ -1,0 +1,47 @@
+{% extends "base.html" %} {% block content %}
+{% load static %}
+{% load i18n %}
+{% block css  %}
+<link rel="stylesheet" href="{% static 'styles/create/styles.css' %}" />
+<!--<link rel="stylesheet" media="screen and (max-width: 1050px)" href="{% static 'styles/homepage/mobile.css' %}"/> <span><p>{% translate "hello" %}</p></span> -->
+{% endblock %}
+<h3 class="page-header">create/edit lesson</h3>
+<button class="btn btn-primary m-1" onclick="checkInputs()">save</button>
+<form method="POST" id="lesson-form" enctype="multipart/form-data">
+    <input type="hidden" value="{{ id }}" name="pk">
+    {% csrf_token %}
+    {{ form.as_p }}
+</form>
+<h5 id="warning" class="border border-success border-3 rounded bg-success text-dark invisible">*****level {{ selected_level.level }} is live, do not change level******</h5>
+ <input type="hidden" value={{ level.is_live }} id="level-status">
+<script>
+    const lessonIsLive = document.getElementById('level-status').value
+    if (lessonIsLive === 'true'){
+        const warning = document.getElementById('warning')
+        warning.classList.remove('invisible')
+    }
+    function checkInputs(){
+        const typeBox = document.getElementById('id_type')
+        const selectedType = typeBox.options[typeBox.selectedIndex].text
+        const actorBox = document.getElementById('id_actors')
+        const selectedActors = actorBox.options[actorBox.selectedIndex].text
+
+        if(selectedType === 'none'){
+            alert('please pick a lesson type')
+            return false
+        } else {
+            if (selectedType === 'dialogue' && selectedActors === 'none'){
+                alert('a dialogue needs some actors, please select')
+                return false
+            }
+            const form = document.getElementById('lesson-form')
+            form.submit()
+        }
+    }
+    
+    
+    
+    
+</script>
+
+{% endblock %}

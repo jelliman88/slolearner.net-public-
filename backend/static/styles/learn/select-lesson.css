@@ -1,0 +1,44 @@
+
+
+ul {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+}
+
+.center-flex {
+    justify-content: space-around!important;
+    margin-right: 2rem;
+}
+
+.fa-lock{
+    font-size: 3rem;
+}
+.lesson {
+   text-decoration: none; 
+   color: inherit;
+   border-radius: 5px;
+   margin: 2rem;
+   padding-top: .5rem;
+   padding-bottom: .5rem;
+   min-width: 20rem;
+   max-width: 25rem;
+   min-height:  10rem;
+   min-height:  10rem;
+}
+
+.lesson-number {
+    font-weight: 400;
+    border-radius: 5px;
+    padding: .2rem;
+}
+
+.type-and-title {
+    margin: 2rem;
+}
+
+
+.title {
+    font-weight: 600;
+}
+

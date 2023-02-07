@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:opsz@6..72&display=swap');
+
+@font-face {
+  font-family: 'Playfair';
+  src: url('Playfair_Display/PlayfairDisplay-VariableFont_wght.ttf');
+}
+
+
+
+.np-frontpage{
+    border: 5px solid black;
+    border-radius: 5px;
+    
+}
+
+.np-topbox {
+    display: flex;
+    justify-content: center;
+}
+
+.np-name{
+    font-size: 3rem;
+    font-family: Playfair;
+
+}
+
+.np-title {
+    font-size: 4rem;
+}
+
+.np-middlebox{
+    display: flex;
+    border: 1px solid black;
+}
+
+.np-image{
+    max-height: 25rem;
+    width: auto;
+    margin-right: 10rem;
+    margin: 2rem;
+}
+
+.np-description {
+   padding-right: 1rem;
+
+}
+
+.line {
+    display: flex;
+    flex-direction: column;
+}
+
+.blurry-text {
+    color: transparent;
+    text-shadow: 0 0 5px rgba(0,0,0,0.5);
+ }
+
+ .blurry-text select {
+    display: none;
+ }
+.highlight-text {
+    background-color: black;
+    color: white;
+
+}

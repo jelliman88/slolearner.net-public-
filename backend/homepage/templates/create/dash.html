@@ -1,0 +1,14 @@
+{% extends "base.html" %} {% block content %} {% load static %} {% load i18n %} {% block css %}
+<link rel="stylesheet" href="{% static 'styles/create/styles.css' %}" />
+<!--link rel="stylesheet" media="screen and (max-width: 1050px)" href="{% static 'styles/homepage/mobile.css' %}"/> <span><p>{% translate "hello" %}</p></span> -->
+{% endblock %}
+<h3 class="page-header">create</h3>
+
+
+<a href="{% url 'create:lessons' 1 %}" class="btn btn-primary">lessons</a>
+<a href="{% url 'audio:dash' %}" class="btn btn-primary">audio</a>
+<a href="{% url 'create:edit-entries' %}" class="btn btn-primary">edit entry</a>
+
+
+
+{% endblock %}

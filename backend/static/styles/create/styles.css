@@ -1,0 +1,49 @@
+#lesson-form {
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+}
+
+.wrapper {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+
+.top-box { 
+    display: flex;
+    justify-content: space-evenly;
+}
+
+/* only in alt.html*/
+.ajax-box-wrapper{
+    max-width: 20rem;
+}
+
+.ajax-box {
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+}
+.entry-wrapper {
+    border: 1px solid black;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+
+
+#lesson-controls{
+    border: 1px solid black;
+}
+
+.entry-controls{
+    display: flex;
+    justify-content: space-between;
+    max-height: 2.5rem;
+    background-color: gray;
+}
+
+ul {
+    list-style: none;
+}

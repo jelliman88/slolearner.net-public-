@@ -1,0 +1,193 @@
+{% extends "base.html" %} {% block content %} {% load static %} {% load custom-tags %} {% load i18n %} {% block css %}
+<!-- <link rel="stylesheet" href="{% static 'styles/homepage/styles.css' %}" />
+<link rel="stylesheet" media="screen and (max-width: 1050px)" href="{% static 'styles/homepage/mobile.css' %}"/> -->
+{% endblock %}
+{% get_current_language as LANGUAGE_CODE %}
+
+
+{% if LANGUAGE_CODE == 'en' %}
+<h3><span class="text-danger">sample </span> <span class="text-info">lesson</span></h3>
+<ul class="list-unstyled">
+    <li class="border border-2 rounded p-2 m-4">
+        <div class="m-3 d-flex justify-content-between">
+            <span class="h3 text-info">&#9432</span>
+            <span><h3>I am going</h3></span>
+            <span class="border border-2 p-2 rounded">
+               <i class="fa-regular fa-square-plus text-light"></i>
+            </span>
+        </div>
+        
+        <div class="m-3">
+            <span class="invisible"><h3>
+                <span>Jaz</span>
+                <select onchange="grade(this)">
+                    <option hidden>?</option>
+                    <option value="correct">grem</option>
+                    <option>gre</option>
+                    <option>gremo</option>
+                    <option>gresta</option>
+                </select>
+                </h3></span>
+            <br>
+            <button onclick="reveal(this.parentElement)" class="btn btn-primary">show</button>
+        </div>
+    </li>
+    <li class="border border-2 rounded p- m-4">
+        <div class="m-3 d-flex justify-content-between">
+            <span class="h3 text-info">&#9432</span>
+            <span><h3>I am going to the cinema</h3></span>
+            <span class="border border-2 p-2 rounded">
+               <i class="fa-regular fa-square-plus text-light"></i>
+            </span>
+        </div>
+        
+        <div class="m-3">
+            <span class="invisible"><h3>
+                <span>Jaz grem</span>
+                <select onchange="grade(this)">
+                    <option hidden>?</option>
+                    <option>iz</option>
+                    <option>na</option>
+                    <option value="correct">v</option>
+                    <option>od</option>
+                </select>
+                <span>kinu</span>
+                </h3></span>
+            <br>
+            <button onclick="reveal(this.parentElement)" class="btn btn-primary">show</button>
+        </div>
+    </li>
+    <li class="border border-2 rounded p- m-4">
+        <div class="m-3 d-flex justify-content-between">
+            <span class="h3 text-info">&#9432</span>
+            <span><h3>I am going to the cinema with my girlfriend</h3></span>
+            <span class="border border-2 p-2 rounded">
+               <i class="fa-regular fa-square-plus text-light"></i>
+            </span>
+        </div>
+        
+        <div class="m-3">
+            <span class="invisible"><h3>
+                <span>Jaz grem v kinu z moja</span>
+                <select onchange="grade(this)">
+                    <option hidden>?</option>
+                    <option>soseda</option>
+                    <option>ati</option>
+                    <option>fant</option>
+                    <option value="correct">punca</option>
+                </select>
+                </h3></span>
+            <br>
+            <button onclick="reveal(this.parentElement)" class="btn btn-primary">show</button>
+        </div>
+    </li>
+
+</ul>
+{% else %}
+<h3><span class="text-danger">vzorčna </span> <span class="text-info">lekcija</span></h3>
+<ul class="list-unstyled">
+    <li class="border border-2 rounded p-2 m-4">
+        <div class="m-3 d-flex justify-content-between">
+            <span class="h3 text-info">&#9432</span>
+            <span><h3>Jaz grem</h3></span>
+            <span class="border border-2 p-2 rounded">
+               <i class="fa-regular fa-square-plus text-light"></i>
+            </span>
+        </div>
+        
+        <div class="m-3">
+            <span class="invisible"><h3>
+                <span>I</span>
+                <select onchange="grade(this)">
+                    <option hidden>?</option>
+                    <option value="correct">am going</option>
+                    <option>is going</option>
+                    <option>are going</option>
+                    <option>was going</option>
+                </select>
+                </h3></span>
+            <br>
+            <button onclick="reveal(this.parentElement)" class="btn btn-primary">show</button>
+        </div>
+    </li>
+    <li class="border border-2 rounded p- m-4">
+        <div class="m-3 d-flex justify-content-between">
+            <span class="h3 text-info">&#9432</span>
+            <span><h3>Jaz grem v kinu</h3></span>
+            <span class="border border-2 p-2 rounded">
+               <i class="fa-regular fa-square-plus text-light"></i>
+            </span>
+        </div>
+        
+        <div class="m-3">
+            <span class="invisible"><h3>
+                <span>I am going</span>
+                <select onchange="grade(this)">
+                    <option hidden>?</option>
+                    <option>on</option>
+                    <option>in</option>
+                    <option value="correct">to</option>
+                    <option>with</option>
+                </select>
+                <span>the cinema</span>
+                </h3></span>
+            <br>
+            <button onclick="reveal(this.parentElement)" class="btn btn-primary">show</button>
+        </div>
+    </li>
+    <li class="border border-2 rounded p- m-4">
+        <div class="m-3 d-flex justify-content-between">
+            <span class="h3 text-info">&#9432</span>
+            <span><h3>Jaz grem v kinu z moja punca</h3></span>
+            <span class="border border-2 p-2 rounded">
+               <i class="fa-regular fa-square-plus text-light"></i>
+            </span>
+        </div>
+        
+        <div class="m-3">
+            <span class="invisible"><h3>
+                <span>I am going to the cinema with my</span>
+                <select onchange="grade(this)">
+                    <option hidden>?</option>
+                    <option>cousin</option>
+                    <option>boyfriend</option>
+                    <option>husband</option>
+                    <option value="correct">girlfriend</option>
+                </select>
+                </h3></span>
+            <br>
+            <button onclick="reveal(this.parentElement)" class="btn btn-primary">show</button>
+        </div>
+    </li>
+
+</ul>
+{% endif %}
+
+<script>
+   function reveal(elm){
+   const text = elm.children[0]
+   const button = elm.children[2]
+   if (text.classList.contains('invisible')){
+    text.classList.remove('invisible')
+    button.innerHTML = 'hide'
+    
+   } else {
+    text.classList.add('invisible')
+    button.innerHTML = 'show'
+   }
+   }
+
+   function grade(elm){
+    const li = elm.parentElement.parentElement.parentElement.parentElement
+    if (elm.value === 'correct'){
+        li.classList.remove('border-danger')
+        li.classList.add('border-success')
+        
+    } else {
+        li.classList.add('border-danger')
+    }
+    
+    
+   }
+</script>
+{% endblock %}

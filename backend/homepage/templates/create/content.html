@@ -1,0 +1,32 @@
+{% extends "base.html" %} {% block content %}
+{% load static %}
+{% load i18n %}
+{% block css  %}
+<link rel="stylesheet" href="{% static 'styles/create/react.css' %}" />
+<link rel="stylesheet" href="{% static 'styles/base.css' %}" />
+
+{% endblock %}
+<h3 class="page-header"><span class="text-danger">create </span><span >content: </span><span class="text-info">{{ lesson.title }}</span></h3>
+<a href="{% url 'create:lessons' level %}" class="btn btn-primary" >return to level {{ level }}</a>
+<a href="{% url 'create:create-edit-lesson' lesson_id level %}" class="btn btn-primary">edit lesson info</a>
+<input type="hidden" value="{{ csrf_token }}" id="csrf-token">
+<input type="hidden" value="{{ base_url }}" id="base-url">
+<input type="hidden" value="{{ aws_clips_base_url }}" id="aws_clips_base_url">
+{{ 'false' | json_script:'format' }}
+{{ 'true' | json_script:'create' }}
+{{ 'false' | json_script:'alts' }}
+{{ 'false' | json_script:'altEntry' }}
+{{ lesson|safe | json_script:'lesson' }}
+{{ lessons_in_order|safe | json_script:'lessons_in_order' }}
+{% if not entries %}
+{{ "false"|safe | json_script:'entries' }}
+{% else %}
+{{ entries|safe | json_script:'entries' }}
+{% endif %}
+
+{{ homework|safe | json_script:'homework' }}
+<div id="app">
+         
+</div>
+<script   src="{% static 'react-app/build/main.js' %}"></script>
+{% endblock %}

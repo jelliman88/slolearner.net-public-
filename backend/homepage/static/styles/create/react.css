@@ -1,0 +1,27 @@
+.db-search-results {
+    max-height: 25vh;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+}
+    
+.results-li {
+    display: flex;
+    justify-content: space-between;
+
+}
+
+
+.entries-ol li {
+    border: 1px solid black ;
+    margin: 1rem;
+    display: flex;
+    justify-content: space-evenly;
+    padding: .5rem;
+    background-color: rgba(216, 216, 216, 0.74);
+}
+
+.entry-text-input {
+    min-width: 25rem;
+    
+}

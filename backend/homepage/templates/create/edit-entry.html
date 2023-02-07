@@ -1,0 +1,70 @@
+{% extends "base.html" %} {% block content %} {% load static %} {% load i18n %} {% block css %}
+<link rel="stylesheet" href="{% static 'styles/create/styles.css' %}" />
+{% endblock %}
+<h3 class="page-header">edit entry</h3>
+<form method="POST">
+    <button class="btn btn-primary">save</button>
+    {% csrf_token %}
+    {{ form }}
+</form>
+
+<div class="d-flex justify-content-evenly border border-3 m-2 rounded">
+    <div class="bg-primary m-2 p-2 rounded">
+        <div>
+            <h3>eng</h3>
+            <audio controls id="player">
+                
+                <source src="{{ eng_url }}" type="audio/mp3">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+        
+        <br>
+        
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="replacement" value="true">
+            <input type="hidden" name="eng_file_name" value="{{ entry.eng_audio }}">
+            <input type="file" name="eng">
+            
+        
+
+    </div>
+    <button>replace audio</button>
+    <div class="bg-primary m-2 p-2 rounded">
+        <div>
+            <h3>slo</h3>
+            <audio controls id="player">
+                <source src="{{ slo_url }}" type="audio/mp3">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+        
+        <br>
+            
+            <input type="file" name="slo">
+            <input type="hidden" name="slo_file_name" value="{{ entry.slo_audio }}">
+        </form>
+        
+
+    </div>
+   
+</div>
+<ol>
+    <h4>this entry appears in:</h4>
+    
+        
+        {% for obj in appears_in %}
+        <li>
+        <a href="{% url 'create:lessons' obj.level %}">level {{ obj.level }} - {{ obj.title }}</a>
+        </li>
+        {% endfor %}
+    
+   
+</ol>
+
+
+
+
+
+{% endblock %}

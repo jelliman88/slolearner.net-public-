@@ -1,0 +1,107 @@
+{% extends "base.html" %} {% block content %}
+{% load static %}
+{% load i18n %}
+{% block css  %}
+<link rel="stylesheet" href="{% static 'styles/learn/dash.css' %}" />
+
+{% endblock %}
+{% if user.first_lang %}
+<h1>
+    <span>{% translate "welcome" %}</span>
+    <span class="text-info">{{ user.username }}</span>
+</h1>
+    
+<div class="dash-wrapper text-white">
+    <div class="progress-box">
+        <h5 class="border-top m-1 p-1 border-danger border-3">{% translate "progress" %}</h5>
+        <h1 class="border-top m-1 p-1 border-info border-2 text-info">{{ percent_complete }}%</h1>
+        <div class="p-4">
+
+        
+        <div class="progress m-2">
+            
+            <div id="progress-bar" class="progress-bar progress-bar-striped bg-info" style="width: 0%" status=True role="progressbar" style='width: 100%' aria-valuemin="0" aria-valuenow="25" aria-valuemax="100"></div>
+        </div>
+        {% if user.progress == 1 %}
+        <a href="{% url 'learn:select-lesson' 1 %}" class="btn btn-primary">{% translate "start learning" %}</a>
+        {% else %}
+
+        {% if user.progress == total_levels %}
+        <span>{% translate "you are up to date!" %}</span>
+        <br>
+        <span>{% translate "more levels on the way soon" %}</span>
+        <br>
+        <a href="{% url 'learn:select-lesson' last_avail_level %}" class="btn btn-primary">{% translate "revise" %} </a>
+        {% else %}
+        <a href="{% url 'learn:select-lesson' user.progress %}" class="btn btn-primary">{% translate "continue with level" %} {{ user.progress }}</a>
+        
+        {% endif %}
+        
+        {% endif %}
+        </div>
+    </div>
+    
+   <div class="homework-list">
+        <h5 class="border-top m-1 p-1 border-danger border-3">{% translate "homework" %}</h5>
+        <h6 class="border-top m-1 p-1 border-info border-2"></h6>
+        
+        
+            {% if not entries %}
+            <span>{% translate "add entries to your list using the" %} <span className="homework-add-remove-button unselectable">
+                <i class="fa-regular fa-square-plus text-secondary"></i>
+            </span>
+        </span>
+            {% else %}
+            <h1 class="text-info">{{ entries }}</h1>
+            {% if entries == 1 %}
+            <span>{% translate "entry on your list" %}</span>
+            {% else %}
+            <span>{% translate "entries on your list" %}</span>
+            {% endif %}
+            <br>
+            <a href="{% url 'learn:homework'%}" class="btn btn-primary mt-4">{% translate "study" %}</a>
+       
+        {% endif %}
+    </div>
+        
+        
+<input type="hidden" id="percent-complete" value="{{ percent_complete}}">
+</div>
+   
+        {% else %}
+        <h3 class="m-2"><span >pick one </span><span class="text-danger">/</span>/<span class="text-info">/</span> <span> izbrati eno</span></h3>
+        <button onclick="submitForm(this.value)" value="eng" class="btn btn-primary m-2">{% translate "I am learning slovenian" %}</button>
+        <button onclick="submitForm(this.value)" value="slo" class="btn btn-primary m-2">{% translate "Učim se angleško" %}</button>
+        <form method="POST" id="language-form">
+            {% csrf_token %}
+            <input type="hidden" name="learning" id="language">
+        </form>
+{% endif %}
+
+
+<script>
+try {
+    const percentComplete = document.getElementById('percent-complete')
+$("#progress-bar").animate({
+    width: percentComplete.value + '%'
+}, 2500);
+} catch (error) {
+    console.log(error)
+}
+
+/*
+
+const progressBar = document.getElementById('progress-bar')
+progressBar.setAttribute("style", "width: " + percentComplete.value + "%")
+*/
+
+
+    function submitForm(language){
+        const input = document.getElementById('language')
+        const form = document.getElementById('language-form')
+        input.value = language
+        form.submit()
+        
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %} {% block content %} {% load static %} {% load i18n %} {% block css %}
+<link rel="stylesheet" href="{% static 'styles/homepage/landing-page.css' %}" /> {% endblock %}
+<div class="landing-page-wrapper">
+   
+      <div class="slo-learner-banner">
+        <span class="navbar-slo text-danger">slo</span>
+        <img src="{% static 'images/tortoise-white.png' %}" class="tortoise-white-png" >
+      <span class="navbar-learner text-info">learner</span></a>
+      </div>
+      
+    <div class="border-top m-1 p-1 border-danger border-3">
+      <h2>
+        {% translate "LEARN SLOVENE ONLINE" %}
+      </h2>
+      
+    </div>
+    <div class="bullet-points border-top border-info border-2">
+        <div class="bullet">
+      <i class="fa-solid fa-laptop"></i>
+      <p>{% translate "interactive learning" %}</p>
+    </div>
+    <div class="bullet">
+      <i class="fa-solid fa-podcast"></i>
+      <p>{% translate "accompanying podcast" %}</p>
+    </div>
+        <div class="bullet">
+      <i class="fa-solid fa-layer-group"></i>
+      <p>{% translate "level based progression" %}</p>
+    </div>
+        <div class="bullet">
+        <i class="fa-solid fa-volume-high"></i>
+      <p>{% translate "audio clips for pronunciation" %}</p>
+    </div>
+    </div>
+    <div class="bullet-points"> 
+        <div>
+            <a class="btn btn-danger" href="{% url 'homepage:signup' %}">{% translate "sign up" %}</a>
+            <a class="btn btn-light" href="{% url 'homepage:login' %}">{% translate "login" %}</a>
+            <a class="btn btn-info" href="{% url 'homepage:sample' %}">{% translate "try out" %}</a>
+        </div>
+         
+    </div>
+</div>
+
+{% endblock %}

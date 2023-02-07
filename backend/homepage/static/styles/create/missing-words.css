@@ -1,0 +1,21 @@
+.mw-entry{
+    border: 1px solid black;
+    margin: 2rem;
+}
+
+.select-wrapper {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.autofill-button {
+    border-radius: 5px;
+    padding: .5rem;
+    
+}
+
+.autofill-button:hover {
+    background-color: rgb(65, 65, 65);
+    cursor: pointer;
+    transition-delay: 200ms;
+}

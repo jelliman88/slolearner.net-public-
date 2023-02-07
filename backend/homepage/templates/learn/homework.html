@@ -1,0 +1,219 @@
+{% extends "base.html" %} {% block content %} {% load static %} {% load i18n %} {% load custom-tags %} {% block css %}
+<link rel="stylesheet" href="{% static 'styles/learn/homework.css' %}" />
+{% endblock %}
+<h3 class="page-header">{% translate "my homework" %}</h3>
+<div class="">
+    {% if not page_obj %}
+    <span>{% translate "Your list is empty" %},</span>
+    <span><span>{% translate "add entries to your list using the" %} <span className="homework-add-remove-button unselectable">
+        <i class="fa-regular fa-square-plus text-secondary"></i>
+    </span>
+    <span>{% translate "whilst studying" %}</span>
+    </span></span>
+</div>
+
+{% else %}
+
+<form method="POST" class="d-flex justify-content-center">
+    {% csrf_token %}
+    <div class="p-1 m-1">
+        <label for="options">{% translate "items per page" %}</label>
+        <select id="options" name="items-per-page">
+            {% for i in page_options %}
+            <option value="{{ i }}" {% if i == items_per_page %} 
+            selected 
+            {% elif i == 4 %} 
+            {% endif %}>
+            {% if i == page_obj|length %}
+            {% translate "max" %}
+            {% else %}
+            {{ i }}
+            {% endif %}</option>
+            {% endfor %}
+        </select>
+
+    </div>
+
+    <div class="m-1 p-1">
+        <label >{% translate "shuffle" %}</label>
+        <input type="radio" name="side" value="shuffle" {% if shuffle %} checked="checked" {% endif %}>
+    </div>
+
+    <div class="m-1 p-1">
+        <label>{% translate "switch" %}</label>
+        <input type="radio" name="side" value="switch">
+    </div>
+    <input type="hidden" name="first-lang" value="{{ first_lang }}">
+    <input type="submit" class="btn btn-info m-1" value="{% translate 'apply' %}">
+</form>
+
+
+<div>
+    <div class="d-flex justify-content-around">
+        {% if page_obj.has_previous %} 
+        <a class="btn" href="?page=1" >&laquo; first</a>
+        <a class="btn btn-primary" href="?page={{ page_obj.previous_page_number }}">{% translate 'previous' %}</a> 
+        {% else %}
+        <a class="btn" aria-disabled="true">&laquo; first</a>
+        <button class="btn btn-primary" disabled >{% translate 'previous' %}</button>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span> {% if page_obj.has_next %}
+        <a class="btn btn-secondary" href="?page={{ page_obj.next_page_number }}">{% translate 'next' %}</a>
+        <a class="btn"  href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% else %}
+        <button class="btn btn-primary" disabled >{% translate 'next' %}</button>
+        <a class="btn"  aria-disabled="true">last &raquo;</a>
+        {% endif %}
+    </div>
+    <ol id="list" class="homework-ol">
+        {% for entry in page_obj %}
+        <li class="line-wrapper"> 
+                
+                <div class="text-wrapper">
+                    {% if shuffle %}
+                    {% if value|random == 1 %}
+                    <div>
+                        <img src="{% static 'images/eng-flag.png' %}" class="flag-icon flag-icon-left" >
+                        <div class="d-flex justify-content-around">
+                            <h3 class="text">{{ entry.eng }}</h3>
+                            <h4 class="audio-button-left" onclick="play(this)" name="{{ entry.eng_audio }}"><i class="fa-solid fa-volume-high speaker-icon unselectable"></i></h4>
+                        </div>   
+                    </div>
+                    <div>
+                        <img src="{% static 'images/slo-flag.png' %}" class="flag-icon flag-icon-right">
+                        <div class="d-flex justify-content-around">
+                            <h4 class="audio-button-right" onclick="play(this)" name="{{ entry.slo_audio }}"><i class="fa-solid fa-volume-high speaker-icon unselectable"></i></h4>
+                            <h3 class="text hidden" onclick="reveal(this)"><span>{{ entry.slo }}</span></h3>
+                        </div>
+                        
+                    </div>
+                    
+                    
+                    {% else %}
+                    <div>
+                        <img src="{% static 'images/slo-flag.png' %}" class="flag-icon flag-icon-left" >
+                        <div class="d-flex justify-content-around">
+                            <h3 class="text">{{ entry.slo }}</h3>
+                            <h4 class="audio-button-left" onclick="play(this)" name="{{ entry.slo_audio }}"><i class="fa-solid fa-volume-high speaker-icon unselectable"></i></h4>
+                        </div>
+                    </div>
+                    <div>
+                        <img src="{% static 'images/eng-flag.png' %}" class="flag-icon flag-icon-right">
+                        <div class="d-flex justify-content-around">
+                            <h4 class="audio-button-right" onclick="play(this)" name="{{ entry.eng_audio }}"><i class="fa-solid fa-volume-high speaker-icon unselectable"></i></h4>
+                            <h3 class="text hidden" onclick="reveal(this)"><span>{{ entry.eng }}</span></h3>
+                        </div>
+                        
+                    </div>
+                    {% endif %}
+                    
+                    {% else %}
+                    
+                    {% if first_lang == 'eng' %}
+                    <div>
+                        <img src="{% static 'images/eng-flag.png' %}" class="flag-icon flag-icon-left" >
+                        <div class="d-flex justify-content-around">
+                            <h3 class="text">{{ entry.eng }}</h3>
+                            <h4 class="audio-button-left" onclick="play(this)" name="{{ entry.eng_audio }}"><i class="fa-solid fa-volume-high speaker-icon unselectable"></i></h4>
+                        </div>   
+                    </div>
+                    <div>
+                        <img src="{% static 'images/slo-flag.png' %}" class="flag-icon flag-icon-right">
+                        <div class="d-flex justify-content-around">
+                            <h4 class="audio-button-right" onclick="play(this)" name="{{ entry.slo_audio }}"><i class="fa-solid fa-volume-high speaker-icon unselectable"></i></h4>
+                            <h3 class="text hidden" onclick="reveal(this)"><span>{{ entry.slo }}</span></h3>
+                        </div>
+                        
+                    </div>
+                    
+                    {% else %}
+                    <div>
+                        <img src="{% static 'images/slo-flag.png' %}" class="flag-icon flag-icon-left" >
+                        <div class="d-flex justify-content-around">
+                            <h3 class="text">{{ entry.slo }}</h3>
+                            <h4 class="audio-button-left" onclick="play(this)" name="{{ entry.slo_audio }}"><i class="fa-solid fa-volume-high speaker-icon unselectable"></i></h4>
+                        </div>
+                    </div>
+                    <div>
+                        <img src="{% static 'images/eng-flag.png' %}" class="flag-icon flag-icon-right">
+                        <div class="d-flex justify-content-around">
+                            <h4 class="audio-button-right" onclick="play(this)" name="{{ entry.eng_audio }}"><i class="fa-solid fa-volume-high speaker-icon unselectable"></i></h4>
+                            <h3 class="text hidden" onclick="reveal(this)"><span>{{ entry.eng }}</span></h3>
+                        </div>
+                        
+                    </div>
+                    
+                    {% endif %}
+                    {% endif %}
+                
+                </div>
+                <i onclick="remove(this)" id="{{ entry.id }}" class="fa-solid fa-square-xmark delete-button"></i>
+                <input type="hidden" value="{{ base_url }}" id="base-url">
+                <input type="hidden" value="{{ csrf_token }}" id="csrf-token">
+            </li>
+        
+        {% endfor %}
+        </ol>
+</div>
+{% endif %}
+
+
+<script>
+
+function  play(e){
+    const div = e.parentElement.parentElement
+    const audio = div.children[2]
+    const url = e.getAttribute('name')
+    console.log(url)
+    const player = new Audio(url)
+    player.play()
+    
+ }
+function reveal(e){
+    if (e.classList.contains('hidden')){
+        console.log('show')
+        e.classList.remove('hidden')
+        e.classList.add('show')
+    } else {
+        console.log('hidden')
+        e.classList.remove('show')
+        e.classList.add('hidden')
+    }
+}
+
+function remove(e){
+    if (!confirm('are you sure you wish to delete?')) {
+        return false
+    }
+
+    const entryId = e.id
+    const list = document.getElementById('list')
+    list.removeChild(e.parentElement)
+    const baseUrl = document.getElementById('base-url').value
+    const csrfToken = document.getElementById('csrf-token').value
+    fetch(baseUrl + 'learn/add-remove-homework/', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers:{
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest', //Necessary to work with request.is_ajax()
+          'X-CSRFToken': csrfToken,
+      },
+      body: JSON.stringify({'id': entryId}) //JavaScript object of data to POST
+  })
+  .then(response => {
+
+      return response.json() //Convert response to JSON
+      
+  })
+  .then(data => {
+   console.log(data)
+  })
+}
+
+
+</script>
+{% endblock %}

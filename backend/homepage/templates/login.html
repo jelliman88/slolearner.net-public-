@@ -1,0 +1,21 @@
+{% extends "base.html" %} {% block content %} {% load static %} {% load i18n %} {% block css %}
+<!-- <link rel="stylesheet" href="{% static 'styles/homepage/styles.css' %}" />
+<link rel="stylesheet" media="screen and (max-width: 1050px)" href="{% static 'styles/homepage/mobile.css' %}"/> -->
+{% endblock %}
+
+<div class="auth-form-wrapper">
+<h3 class="border-top border-danger border-3">{% translate "login" %}</h3>
+ {{ error }}
+    <form class="auth-form border-top border-info border-2 p-2" method="POST">
+      {% csrf_token %}
+        <div class="auth-form-inputs">{{ form.as_p }}</div>
+        <button type="submit" class="btn btn-info">{% translate "login" %}</button>
+        <br>
+        <br>
+        <a  href="{% url 'homepage:signup' %}">{% translate "don't have an account?" %}</a>
+        <br>
+        <a  href="{% url 'homepage:reset_password' %}">{% translate "forgot password?" %}</a>
+    </form>
+</div>
+
+{% endblock %}

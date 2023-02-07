@@ -1,0 +1,35 @@
+.dash-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.homework-list {
+    color: white;
+    padding: 1rem;
+    border-radius: 5px;
+}
+
+.homework-list > ul {
+    list-style: none;
+    padding: 1rem;
+}
+
+.progress-box {
+    padding: 1rem;
+    border-radius: 5px;
+    min-width: 20rem;
+}
+
+.progress-stats {
+    color: white;
+    border: 3px solid white;
+    padding: 1rem;
+    margin: 1rem;
+    border-radius: 5px;
+    
+}
+
+.progress-list {
+    list-style: none;
+}

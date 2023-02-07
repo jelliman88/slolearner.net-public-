@@ -1,0 +1,36 @@
+{% extends "base.html" %} {% block content %} {% load static %} {% load i18n %} {% block css %}
+<link rel="stylesheet" href="{% static 'styles/create/styles.css' %}" /> {% endblock %}
+<h3 class="page-header"><span class="text-danger">create </span><span>alternates: </span><span class="text-info">{{ lesson.title }}</span></h3>
+<a href="{% url 'create:lessons' level %}" class="btn btn-primary" >return to level {{ level }}</a>
+<div id="lesson-wrapper">
+    
+        <a href="{% url 'create:create-edit-lesson' lesson.id level %}" class="btn btn-primary m-2">edit lesson info</a>
+    <div id="lesson-builder">
+
+
+        <ol id="entry-list d-flex">
+            {% for entry in entries %}
+            <li class="border border-3 rounded m-2 p-3">
+                <a href="{% url 'create:alt' entry.id lesson.id level %}" class="text-decoration-none">
+                    <span class="border border-info p-2">{{ entry.eng }}</span>
+                    <span class="border border-danger p-2">{{ entry.slo }}</span>
+                    {% for k, v in entry.alts.items %}
+                    {% if k == lesson_id_as_string %}
+                
+                    <span class="bg-success text-light">✓</span>
+                    {% else %}
+                    
+                    {% endif %}
+                    {% endfor %}
+                    
+                </a>
+            </li>
+
+            {% endfor %}
+ 
+    </div>
+
+
+</div>
+
+{% endblock %}

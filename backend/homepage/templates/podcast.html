@@ -1,0 +1,15 @@
+{% extends "base.html" %} {% block content %} {% load static %} {% load i18n %} {% block css %}
+<link rel="stylesheet" href="{% static 'styles/learn/dash.css' %}" /> {% endblock %}
+
+<h3>THE</h3>
+<div class="slo-learner-podcast-banner">
+    <span class="text-danger">slo</span>
+    <img src="{% static 'images/tortoise-white.png' %}" class="tortoise-white-png" />
+    <span class="navbar-learner text-info">learner</span>
+</div>
+
+<h3>PODCAST</h3>
+<img src="{% static 'images/coming-soon.png' %}">
+{% endblock %}
+
+

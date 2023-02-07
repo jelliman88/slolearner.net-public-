@@ -1,0 +1,46 @@
+{% extends "base.html" %} {% block content %}
+{% load static %}
+{% load sass_tags %}
+{% load i18n %}
+{% block css  %}
+
+<link rel="stylesheet" href="{% static 'styles/learn/generator.css' %}" />
+<link rel="stylesheet" href="{% static 'styles/learn/line-by-line.css' %}" />
+
+{% endblock %}
+<h3 class="page-header">{{ lesson.0.title }}</h3>
+<a id="return-button" name="{{ level }}" href="{% url 'learn:select-lesson' level %}"></a>
+
+
+<input type="hidden" value="{% url 'learn:lesson' level lesson.id %}" id="next-lesson-base-href">
+<input type="hidden" value="{{ csrf_token }}" id="csrf-token">
+<input type="hidden" value="{{  user.first_lang  }}" id="first-lang">
+<input type="hidden" value="{{  user.website_lang  }}" id="website-lang">
+<input type="hidden" value="{{ base_url }}" id="base-url">
+<input type="hidden" value="{{ aws_clips_base_url }}" id="aws_clips_base_url">
+
+{{ format | json_script:'format' }}
+{{ 'false' | json_script:'create' }}
+{{ 'false' | json_script:'alts' }}
+{{ 'false' | json_script:'altEntry' }}
+{{ lesson|safe | json_script:'lesson' }}
+{{ lessons_in_order|safe | json_script:'lessons_in_order' }}
+{% if not entries %}
+{{ "flase"|safe | json_script:'entries' }}
+{% else %}
+{{ entries|safe | json_script:'entries' }}
+{% endif %}
+{{ homework|safe | json_script:'homework' }}
+
+{% if format == 'news' %}
+<img src="{% static 'images/bg.jpg' %}" id="frontpage-bg" class="d-none">
+{% elif format == 'generator' %}
+<img src="{% static 'images/eng-flag.png' %}" id="eng-flag" class="d-none">
+<img src="{% static 'images/slo-flag.png' %}" id="slo-flag" class="d-none">
+{% endif %}
+<div id="app">
+        
+</div>
+<script src="{% static 'react-app/build/main.js' %}" ></script>
+
+{% endblock %}

@@ -1,0 +1,105 @@
+{% extends "base.html" %} {% block content %} {% load static %} {% load i18n %} {% load custom-tags %} {% block css %}
+<link rel="stylesheet" href="{% static 'styles/learn/select-lesson.css' %}" />
+{% endblock %}
+<h3 class="page-header">
+    {% if user.website_lang == 'en' %} 
+    <span>level {{ level.level }}</span>
+    <span>:</span>
+     <span class="text-info p-2">{{ level.title }} </span>
+    {% else %}
+    <span class="text-danger">raven {{ level.level }}</span>
+    <span>:</span>
+    <span class="text-info p-2">{{ level.slo_title }} </span>
+    {% endif %}  </h3>
+<h4>
+    <select id="level-select" onchange="handleChange()">
+        <option hidden>{% translate "select level" %}</option>
+        {% for level in levels %}
+        {% if level.level <= user.progress   %}
+        <option {% if level.level == level %} selected {% endif %} value="{% url 'learn:select-lesson' level.level %}">{{ level.level }}. 
+            {% if user.website_lang == 'en' %} 
+            {{ level.title }}
+            {% else %}
+            {{ level.slo_title }}
+            {% endif %}
+        </option>
+        {% else %}
+          
+        {% endif %}
+        {% endfor %}
+    </select>
+
+</h4>
+{% if level.is_live == 'false' and not user.is_superuser %}
+
+<h3>{% translate "lesson under construction, comeback later" %}</h3>
+{% else %}
+
+<div>
+    
+    <ul {% if lessons|length < 2 %} class="center-flex" {% endif %} >
+        {% for lesson in lessons %}
+        {% if lesson.id not in available %} 
+        <li class="locked-lesson lesson border border-primary border-5 rounded" title="{% translate 'complete all previous lessons with a prefect score to unlock' %}">
+            <h4> <span class="lesson-number">{% translate "lesson" %}  {{ forloop.counter }}</span></h4>
+            <div class="type-and-title">
+                <span>{{ lesson.type }}</span>
+                <br>
+                <span class="title text-light p-2"> 
+                    {% if user.website_lang == 'en' %} 
+                    {{ lesson.title }}
+                    {% else %}
+                    {{ lesson.slo_title }}
+                    {% endif %}
+                </span>
+            </div>
+            <i class="fa-solid fa-lock"></i>
+        </li>
+        {% else %}
+        <a {% if results|attempted:lesson.id %}
+        class="lesson border border-5 border-{{ results|get_grade_color:lesson.id  }}"
+        {% else %}
+        class="lesson border border-5 border-white" 
+        {% endif %}
+        href="{% url 'learn:lesson' level.level lesson.id %}">
+            <h4> <span class="lesson-number">{% translate "lesson" %} {{ forloop.counter }}</span></h4>
+            <div class="type-and-title">
+                
+                <span>{{ lesson.type }}</span>
+                <br>
+                <span class="title text-light p-2"> 
+                    {% if user.website_lang == 'en' %} 
+                    {{ lesson.title }}
+                    {% else %}
+                    {{ lesson.slo_title }}
+                    {% endif %}
+                </span>
+            </div>
+             <div>
+                  
+            </div>
+            <div class="a-buttons">
+            </div>
+            {% if results|attempted:lesson.id %}
+            <span class="p-2 fw-bold">{% translate "top score" %}: {{ results|attempted:lesson.id }} </span>
+            {% else %}
+            <span class="p-2 text-success fw-bold">{% translate "start" %}</span>
+            {% endif %}
+        </a>
+        {% endif %}
+       
+        {% endfor %}
+    </ul>
+    {% endif %}
+    <form id="hidden-form" method="GET"></form>
+</div>
+
+<script>
+    function handleChange() {
+        const select = document.getElementById('level-select')
+        const form = document.getElementById('hidden-form')
+        form.action = select.value
+        form.submit()    
+    }
+</script>
+{% endblock %}

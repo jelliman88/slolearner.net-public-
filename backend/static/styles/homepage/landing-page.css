@@ -1,0 +1,35 @@
+.bg-image {
+    background: url("/static/images/landscape-bg.jpg") 10% 0 no-repeat fixed;
+    color: white;  
+    height: 17rem;
+    padding: 2rem;
+}
+
+.bullet-points {
+    display: flex;
+    justify-content: space-evenly;    
+} 
+
+.bullet {
+    margin: 1rem;
+    padding: 1rem;
+    border-radius: 5px;
+    max-width: 15rem;
+    min-width: 15rem;
+}
+
+.bullet > i {
+    font-size: 3rem;
+    margin: 1rem;
+}
+
+.bullet > p {
+    font-size: 1.5rem;
+
+}
+
+.or {
+    color: black;
+    font-size: 1rem;
+   
+}

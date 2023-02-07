@@ -1,0 +1,27 @@
+{% extends "base.html" %} {% block content %} {% load static %} {% load i18n %} {% block css %}
+<!-- <link rel="stylesheet" href="{% static 'styles/homepage/styles.css' %}" />
+<link rel="stylesheet" media="screen and (max-width: 1050px)" href="{% static 'styles/homepage/mobile.css' %}"/> -->
+{% endblock %}
+
+
+<div class="mt-5">
+    <h3>{% translate "email sent" %} to <span class="text-info">{{ user }}</span></h3>
+    <span class="text-danger">{{ msg }}</span>
+    <form method="POST" class="m-2 p-2">
+        {% csrf_token %}
+        <input type="text" name="code" class="w-25 bg-white text-dark p-1 rounded" placeholder='{% translate "4 digit code" %}'>
+        
+        <button type="submit" class="btn btn-primary m-1">verify</button>
+        <br>
+        {% translate 'please check you spam folder if no email has arrived' %}
+    </form>
+</div>
+
+
+<script>
+    const nav = document.getElementById('navbar')
+    console.log(nav)
+    nav.remove()
+</script>
+
+{% endblock %}

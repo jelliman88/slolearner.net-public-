@@ -1,0 +1,205 @@
+{% extends "base.html" %} {% block content %} {% load static %} {% load i18n %} {% block css %}
+<link rel="stylesheet" href="{% static 'styles/create/styles.css' %}" />
+{% endblock %}
+<h3 class="page-header">match audio</h3>
+<a class="btn btn-light"href="{% url 'audio:dash' %}" class="">retry</a>
+<div>
+    <div class="d-flex justify-content-around">
+        <h4 class="text-danger">level {{ level.level }}</h4>
+        <h4 class="text-info">{{ lesson.title }}</h4>
+    </div>
+    <button id="download-button" class="btn btn-primary" onclick="download(this)" value="{{ lesson.type }}" name="{{ lesson.id }}">download</button>
+    <form method="POST" id="audio-form"  enctype="multipart/form-data">
+        {% csrf_token %}
+        <div id="filezone">
+            <button id="upload-button" type="submit" class="btn btn-primary m-1" disabled>upload</button>
+        </div>
+    </form>
+    {% if lesson_obj.type == 'dialogue' %}
+        <span class="text-warning">dialogue</span>
+    {% endif %} 
+    
+   
+    <div class="d-flex justify-content-around">
+        <div id="clips" class="d-flex flex-column">
+            {% for url in urls %}
+            <div class="m-2 border p-2 rounded dropzone" style="min-height: 5rem">
+                <audio controls id="player">
+                    
+                    <source src="{{ url }}" type="audio/mp3">
+                    Your browser does not support the audio element.
+                </audio>
+                <span onclick="deleteChunk(this)" style="cursor: pointer">x</span>
+            </div>
+            
+              {% endfor %}
+        </div>
+        
+        <div id="entries"  class="d-flex flex-column">
+            
+            {% if not entries %}
+            <h3>all entries in this lesson have audio</h3>
+            {% else %}
+            {% for entry in entries %}
+            <div class="m-2 border rounded p-2" draggable="true" name="-en" value="{{ entry.id }}"><h4>{{ entry.eng }}</h4></div>
+            <div class="m-2 border rounded p-2" draggable="true" name="-sl" value="{{ entry.id }}"><h4>{{ entry.slo}}</h4></div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div id="matched">
+
+</div>
+
+<div id='upload'>
+
+</div>
+<div id="spinner" class="spinner-border invisible"></div>
+
+
+<script>
+    const delay = ms => new Promise(res => setTimeout(res, ms));
+    const form = document.getElementById('audio-form')
+    let dragged
+    const matchedArea = document.getElementById('matched')
+    async function deleteChunk(e){
+        elm = e.parentElement
+        const spinner = document.createElement('div')
+        spinner.classList.add('spinner-border')
+        elm.innerHTML = ''
+        elm.appendChild(spinner)
+        spinner.classList.remove('invisible')
+        
+        await delay(400)
+        elm.remove()
+    }
+
+    function checkChunk(input){
+                const arr = input.value.split("\\")
+                const fileName = arr[arr.length -1]
+                const box = input.parentElement
+                const text = box.children[1].innerHTML
+                if (text === fileName){
+                    box.classList.remove('border-danger')
+                    box.classList.add('border-success')
+                } else {
+                    box.classList.remove('border-success')
+                    box.classList.add('border-danger')
+                }
+                
+                const boxes = document.getElementsByClassName('box')
+                for (elm of boxes){
+                    if (!elm.classList.contains('border-success')){
+                        document.getElementById('upload-button').disabled = true
+                        return false
+                    } 
+                }
+                document.getElementById('upload-button').disabled = false
+            }
+
+    function download(button){
+        const lessonType = button.value
+        console.log(lessonType)
+        const lessonId = button.getAttribute('name')
+        console.log(lessonId)
+        const clips = document.getElementsByClassName('dropzone')
+        const filezone = document.getElementById('filezone')
+        for (const div of clips) {
+            const text = div.children[2]
+            let fileName
+            if (lessonType === 'dialogue'){
+                console.log('if')
+                fileName = `${text.getAttribute('value')}${text.getAttribute('name')}-${lessonId}.mp3`
+            } else {
+                console.log('else')
+                fileName = `${text.getAttribute('value')}${text.getAttribute('name')}.mp3`
+            }
+            
+            const audio = div.children[0].children[0]
+            let url = audio.src
+            
+            const splitUrl = url.split('/')
+            
+            const chunkName = splitUrl[splitUrl.length - 1]
+            
+            const a = document.createElement('a')
+            a.href = url
+            a.download = chunkName
+            a.click()
+            
+            const input = document.createElement('input')
+            input.type = 'file'
+            input.name = 'clip'
+            input.classList.add('file')
+            input.setAttribute("onchange", "checkChunk(this)")
+            const infoText = document.createElement('h4')
+            infoText.innerHTML = chunkName
+            infoText.classList.add('text-info')
+
+            newFileName = document.createElement('input')
+            newFileName.type = 'hidden'
+            newFileName.value = fileName
+            newFileName.name = 'file-name'
+
+            const wrapper = document.createElement('div')
+            wrapper.classList.add('box','border', 'border-3', 'rounded', 'm-1', 'p-1')
+            wrapper.appendChild(input)
+            wrapper.appendChild(infoText)
+            wrapper.appendChild(newFileName)
+            filezone.appendChild(wrapper)
+            
+            
+        }
+        matchedArea.classList.add('d-none')
+        document.getElementById('download-button').disabled = true
+    }
+
+    addEventListener('dragstart', (e) => { 
+        dragged = e.target
+    });
+
+    addEventListener('dragover', (event) => {
+        event.preventDefault();
+        const elm = event.target
+        
+        if (elm.classList.contains('dropzone')){
+            elm.classList.add('bg-info')
+        }
+        if (elm.parentElement.classList.contains('dropzone')){
+            elm.parentElement.classList.add('bg-info')
+        }
+       
+        
+    })
+
+
+    addEventListener('dragleave', (event) => {
+        event.target.classList.remove('bg-info');
+    })
+
+   
+    addEventListener('drop', (e) => {
+        const dropped = event.target
+        let clipWrapper
+        if (dropped.classList.contains('dropzone')){
+            clipWrapper = dropped
+        }
+
+        if (dropped.parentElement.classList.contains('dropzone')){
+            clipWrapper = dropped.parentElement
+        }
+       
+        if (clipWrapper.classList.contains('dropzone')){
+            dragged.remove()
+            clipWrapper.appendChild(dragged)
+            clipWrapper.classList.remove('bg-info');
+            clipWrapper.remove()
+            matchedArea.appendChild(clipWrapper)
+        }
+        
+    });
+</script>
+
+{% endblock %}

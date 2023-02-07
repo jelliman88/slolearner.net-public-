@@ -1,0 +1,310 @@
+{% extends "base.html" %} {% block content %} {% load static %} {% load i18n %} {% block css %}
+<link rel="stylesheet" href="{% static 'styles/create/lessons.css' %}" />
+<!--link rel="stylesheet" media="screen and (max-width: 1050px)" href="{% static 'styles/homepage/mobile.css' %}"/> <span><p>{% translate "hello" %}</p></span> -->
+{% endblock %}
+<h3 class="page-header">create</h3>
+
+<div class="m-2">
+    <a href="{% url 'create:create-edit-level' 0 %}" class="btn btn-primary">create new level</a>
+    <a href="{% url 'create:create-edit-lesson' 0 selected_level.level %}" class="btn btn-primary">create new lesson</a>
+    <a class="btn btn-secondary" href="{% url 'create:create-edit-level' selected_level.level %}" >edit level {{ selected_level.level }}</a>
+    <select id="level-select" value="{{ selected_level.level }}">
+        <option hidden>select level</option>
+        {% for level in levels %}
+        <option {% if level.level == selected_level.level %} selected {% endif %} class="{{ level.level }}" 
+        value="{% url 'create:lessons' level.level %}">{{ level.level }}. {{ level.title }}</option>
+        {% endfor %}
+    </select>
+</div>
+{% if not lessons %}
+<h4>{% if selected_level.level == 0 %}
+    currently no lessons without a level
+    {% else %}
+    no lessons in level {{ selected_level.level }}
+    {% endif %}
+     </h4>
+{% else %}
+<div class="d-flex justify-content-between">
+    <div>
+        <h4>lesson order</h4>
+        
+        
+        <ol id="order-list" class="d-flex flex-column dropzone border border-info rounded border-3">
+            
+        </ol>
+    </div>
+
+    <div class="lessons-list-wrapper">
+        <h4> level {{ selected_level.level }} </h4>
+            <span>{{ selected_level.title }}</span>
+        <ol >
+            
+            {% for k, lesson in lessons.items %}
+            <li class="border border-light rounded p-2 m-4" id="{{ lesson.id }}">
+                <span class=" m-1 {% if lesson.has_audio == 'true' %}
+                text-success
+                {% else %}
+                text-danger
+                {% endif %}"><i class="fa-solid fa-volume-high"></i></span>
+                <a class="text-decoration-none" href="{% url 'create:add-info' lesson.id selected_level.level %}">&#9432;</a>
+                {% if not lesson.entries %}
+                <a class="border border-danger rounded p-1 m-2" href="{% url 'create:lesson' lesson.id selected_level.level  %}">{{ lesson.title }}</a>
+                {% else %}
+                <a  class="border border-success rounded p-1 m-2" href="{% url 'create:lesson' lesson.id selected_level.level  %}">{{ lesson.title }}</a>
+                {% endif %}
+                
+                {% if lesson.create_progress.alts.0 == lesson.create_progress.alts.1 and lesson.create_progress.alts.1 is not 0  %}
+                <span class="border border-success rounded p-1 m-2">
+                    <a  href="{% url 'create:alts' lesson.id selected_level.level  %}">alternates</a>
+                    <span>{{ lesson.create_progress.alts.0 }}/{{ lesson.create_progress.alts.1 }}</span>
+                </span>
+                {% else %}
+                <span class="border border-danger rounded p-1 m-2">
+                    <a  href="{% url 'create:alts' lesson.id selected_level.level %}">alternates</a>
+                    <span>{{ lesson.create_progress.alts.0 }}/{{ lesson.create_progress.alts.1 }}</span>
+                </span>
+                {% endif %}
+                
+                {% if lesson.create_progress.missing_words.0 == lesson.create_progress.missing_words.1 and lesson.create_progress.missing_words.1 is not 0  %}
+                <span class="border border-success rounded p-1 m-2">
+                    <a href="{% url 'create:missing-words' lesson.id selected_level.level  %}">missing words</a>
+                    <span>{{ lesson.create_progress.missing_words.0 }}/{{ lesson.create_progress.missing_words.1 }}</span>
+                </span>
+                {% else %}
+                <span class="border border-danger rounded p-1 m-2">
+                    <a href="{% url 'create:missing-words' lesson.id selected_level.level  %}">missing words</a>
+                    <span>{{ lesson.create_progress.missing_words.0 }}/{{ lesson.create_progress.missing_words.1 }}</span>
+                </span>
+                {% endif %}
+             
+                
+                <a class="btn btn-secondary" href="{% url 'create:create-edit-lesson' lesson.id selected_level.level %}">edit</a>
+                <span class="m-2">
+                    <button class="btn btn-success" name="add-button" onclick="backendAdd(this)" value="{{ lesson.id }}" 
+                     {% if lesson.id in level_order or lesson.create_progress.missing_words.0 != lesson.create_progress.missing_words.1 and lesson.create_progress.missing_words.1 is not 0 %}
+                        disabled 
+                     {% endif %}
+                     {% if not lesson.has_audio == 'true' %}
+                        disabled
+                     {% endif %} >+</button>
+                    
+                </span>
+            </li>
+            {% endfor %}
+            
+        </ol>
+    </div>
+   
+</div>
+{% endif %}
+{% if selected_level.is_live == 'true' %}
+<h5 class="border border-success border-3 rounded bg-success text-dark">*****level {{ selected_level.level }} is live, only edit alternates******</h5>
+{% else %}
+<form id="go-live-form" method="POST">
+    {% csrf_token %}
+    <span>level {{ selected_level.level }}<input class="m-1" type="checkbox" name="go-live" onchange="toggleGoLive(this)"></span>
+    <input type="hidden" name="level" value="{{ selected_level.level }}">
+    <br>
+</form>
+<button id="go-live-button" class="btn btn-danger" onclick="doubleCheck()" disabled>go live</button>
+{% endif %}
+
+
+<input type="hidden" value="{{ csrf_token }}" id="csrf-token" >
+{{ level_order|safe | json_script:'levelOrder' }}
+{{ lessons|safe | json_script:'lessons' }}
+
+<script>
+    function toggleGoLive(e){
+        const goLiveButton = document.getElementById('go-live-button')
+        if(e.checked){
+            goLiveButton.disabled = false
+        } else {
+            goLiveButton.disabled = true
+        }
+    }
+    function doubleCheck(){
+        if (confirm('are you 100% positive the level is ready to go live?')) {
+            form = document.getElementById('go-live-form')
+            form.submit()
+            } else {
+            return false
+            }
+    }
+
+    function ajaxPost(arr){
+        const csrfToken = document.getElementById('csrf-token').value
+        const select = document.getElementById('level-select')
+        const level = select.options[select.selectedIndex].classList
+        $.ajax({
+            url: '/create/ajax-set-level-order/' + level ,
+            method: 'POST',
+            credentials: 'same-origin',
+            headers:{
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest', //Necessary to work with request.is_ajax()
+                'X-CSRFToken': csrfToken,
+            },
+         body: JSON.stringify(arr)
+})
+        
+    }
+    function extract(id){
+        let context = document.getElementById(id).textContent
+        //console.log(context)
+        context = context.replace(/'/g, '"')
+        
+        context = context.slice(1,-1)
+        //console.log(context)
+        try {
+          context = JSON.parse(context) 
+          return context 
+        } catch (error) {
+          console.log(id)
+          console.log(error)
+          
+        }
+        
+        return context
+    }
+
+    function createElem(type, textContent){
+        const elm = document.createElement(type)
+        elm.innerHTML = textContent
+        return elm
+    }
+
+    function backendAdd(button){
+        const id = button.value
+        const select = document.getElementById('level-select')
+        const level = select.options[select.selectedIndex].classList
+        $.ajax({
+            url: '/create/ajax-add-lesson-id/' + id + '/' + level,
+            dataType: 'json',
+            success: function(data) {
+                levelOrder = data
+                populateLevelOrder(data)
+    }})
+     button.disabled = true
+        
+    }
+
+
+    function backendDelete(id){
+        const select = document.getElementById('level-select')
+        const level = select.options[select.selectedIndex].classList
+        $.ajax({
+            url: '/create/ajax-delete-lesson-id/' + id + '/' + level,
+            dataType: 'json',
+            success: function(data) {
+                levelOrder = data
+                populateLevelOrder(data)
+                enableButton(id)
+    }})
+        
+    }
+
+    function enableButton(id){
+        const buttons = document.getElementsByName('add-button')
+        buttons.forEach(button => {
+            if (id === button.value){
+                button.disabled = false
+                return false
+            }
+        })
+    }
+
+    
+
+    function populateLevelOrder(levelOrder){
+        orderList.innerHTML = ''
+        levelOrder.forEach(id => {
+            const li = createElem('li', null)
+            const span = createElem('span', lessons[id].title)
+            const button = createElem('button', 'X')
+            button.value = id
+            button.setAttribute('onclick','backendDelete(this.value)')
+            button.classList.add('btn','btn-danger','m-1', 'btn-sm')
+            li.append(span, button)
+            li.draggable = true
+            li.classList.add('border','border-dark', 'rounded','p-1', 'm-2')
+            li.id = id
+            orderList.append(li)
+        })
+        
+    }
+
+  
+
+    let levelOrder = extract('levelOrder')
+    const lessons = extract('lessons')
+    let orderList  = document.getElementById('order-list')
+    if (!orderList) {
+        orderList = []
+    }
+    populateLevelOrder(levelOrder)
+    
+    
+    
+   
+
+    let draggedId = null
+    let draggedIndex = null
+        
+    document.addEventListener("dragstart", (event) => {
+    draggedId = parseInt(event.target.id)
+    draggedIndex = levelOrder.indexOf(draggedId)
+    });
+
+    document.addEventListener("dragover", (event) => {
+    // prevent default to allow drop
+    event.preventDefault();
+    let draggedOverId = parseInt(event.target.id)
+    if (levelOrder.includes(draggedOverId)){
+        const li = document.getElementById(draggedOverId)
+        li.classList.add('bg-warning')
+    }
+    
+    });
+
+    document.addEventListener("dragleave", (event) => {
+        event.preventDefault();
+    let draggedOverId = parseInt(event.target.id)
+    if (levelOrder.includes(draggedOverId)){
+        const li = document.getElementById(draggedOverId)
+        li.classList.remove('bg-warning')
+    }
+});
+
+    document.addEventListener("drop", (event) => {
+    // prevent default action (open as link for some elements)
+    event.preventDefault();
+    let droppedOnId = parseInt(event.target.id)
+    if (levelOrder.includes(droppedOnId)){
+        levelOrder.splice(draggedIndex, 1)
+        const droppedOnIndex = levelOrder.indexOf(droppedOnId)
+        levelOrder.splice(droppedOnIndex , 0, draggedId )
+        
+        const select = document.getElementById('level-select')
+        const level = select.options[select.selectedIndex].classList
+        const levelOrderAsStr = JSON.stringify(levelOrder)
+        $.ajax({
+            url: '/create/ajax-set-level-order/' + level + '/' +  levelOrderAsStr,
+            dataType: 'json',
+            success: function(data) {
+                populateLevelOrder(levelOrder)
+    }})
+    }
+    });
+
+
+    document.getElementById('level-select').onchange = function() {
+    if (this.selectedIndex!==0) {
+        window.location.href = this.value
+    }        
+    };
+
+
+</script>
+
+{% endblock %}

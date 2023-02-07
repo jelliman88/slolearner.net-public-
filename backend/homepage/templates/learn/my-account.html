@@ -1,0 +1,112 @@
+{% extends "base.html" %} {% block content %} {% load static %} {% load i18n %} {% block css %}
+<link rel="stylesheet" href="{% static 'styles/learn/dash.css' %}" /> {% endblock %}
+<h1>{% translate "account settings" %}</h1>
+<table class="table rounded">
+    <form method="POST"> 
+    <tbody>
+        {% csrf_token %}
+        <button id="update-button" type="submit" class="btn btn-primary m-1">update</button>
+      <tr>
+        <td scope="row">website language <span class="text-danger">/</span>/<span class="text-info">/</span> jezik spletne strani</td>
+        <td> 
+            <span class="p-2"><input type="radio" name="website_lang" value="en"
+                {% if user.website_lang == "en" %}  checked="checked" {% endif %}><img src="{% static 'images/eng-flag.png' %}" class="flag-icon p-1"  ></span>
+            <span class="p-2"><input type="radio" name="website_lang" value="sl"
+                {% if user.website_lang == "sl" %}  checked="checked" {% endif %}><img src="{% static 'images/slo-flag.png' %}" class="flag-icon p-1" ></span>
+        </td>
+      
+      </tr>
+      <tr>
+        <td scope="row">I am learning <span class="text-danger">/</span>/<span class="text-info">/</span> učim se  </td>
+        <td> 
+            <span class="p-2"><input type="radio" name="first_lang" value="slo"
+                {% if user.first_lang == "slo" %}  checked="checked" {% endif %}><img src="{% static 'images/eng-flag.png' %}" class="flag-icon p-1" ></span>
+            <span class="p-2"><input type="radio" name="first_lang" value="eng"
+                {% if user.first_lang == "eng" %}  checked="checked" {% endif %}><img src="{% static 'images/slo-flag.png' %}" class="flag-icon p-1" ></span>
+            
+        </td>
+        
+      </tr>
+      <tr>
+        <td scope="row">change username <span class="text-danger">/</span>/<span class="text-info">/</span> spremeni uporabniško ime</td>
+        <td> 
+            <span class="invisible border border-2 m-1 rounded p-1"><span id="username-span"></span> is <span id="status"></span></span>
+            <br>
+            <input name="username" id="username-input" type="text" class="form-control m-2" aria-describedby="inputGroup-sizing-default" placeholder="{{ user.username }}">
+        </td>
+        
+      </tr>
+    </tbody>
+    </form>
+  </table>
+
+  <input type="hidden" value="{{ base_url }}" id="base-url">
+<input type="hidden" value="{{ csrf_token }}" id="csrf-token">
+
+{% if required_url != request.path %}
+<input type="hidden" value="{{ required_url }}" id="redirect">
+{% endif %}
+
+
+ 
+
+  <script>
+    const baseUrl = document.getElementById('base-url').value
+    const redirect = document.getElementById('redirect')
+   if (redirect){
+    window.location = baseUrl.slice(0,-4) + redirect.value
+   }
+    
+    const status = document.querySelector('#status')
+    const usernameSpan = document.querySelector('#username-span')
+    const usernameInput = document.querySelector('#username-input')
+    const updateButton = document.querySelector('#update-button')
+
+    let timeout = null
+    usernameInput.addEventListener('keyup', function (e) {
+    updateButton.disabled = true
+    clearTimeout(timeout);
+    timeout = setTimeout(function () {
+        checkUsernameExists(usernameInput.value)
+    }, 1000);
+    })
+
+ 
+    function checkUsernameExists(username){
+        const baseUrl = document.getElementById('base-url').value
+        const csrfToken = document.getElementById('csrf-token').value
+        fetch(baseUrl + 'learn/check-username-exists/', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers:{
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest', //Necessary to work with request.is_ajax()
+            'X-CSRFToken': csrfToken,
+            },
+            body: JSON.stringify({'username': username }) //JavaScript object of data to POST
+        })
+        .then(response => {
+        return response.json() //Convert response to JSON
+        
+    })
+    .then(data => {
+        status.innerHTML = data
+        status.parentElement.classList.remove('invisible')
+        usernameSpan.innerHTML = username
+    if (username === ''){
+        status.parentElement.classList.add('invisible')
+    }
+    if (data === 'available'){
+        status.parentElement.classList.remove('border-danger')
+        status.parentElement.classList.add('border-success')
+        updateButton.disabled = false
+    } else {
+        status.parentElement.classList.remove('border-success')
+        status.parentElement.classList.add('border-danger')
+    }
+    })
+
+    }
+    
+  </script>
+{% endblock %}
